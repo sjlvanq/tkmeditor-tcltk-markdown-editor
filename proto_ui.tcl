@@ -1,4 +1,4 @@
-#!/usr/bin/wish
+#!/usr/bin/wish 
 package require Tk
 
 # ----- Variables globales -----
@@ -28,9 +28,9 @@ menu .menu.file -tearoff 0
 
 frame .fraToolbar
 
-menubutton .fraToolbar.mBtnH -text "Titulos" -direction below -menu .fraToolbar.mBtnH.items
+menubutton .fraToolbar.mBtnH -text "Títulos" -direction below -menu .fraToolbar.mBtnH.items
 menu .fraToolbar.mBtnH.items -tearoff 0
-foreach bn {1 2 3 4 5 6} {.fraToolbar.mBtnH.items add command -label "TÃ­tulo $bn" -command {}} 
+foreach bn {1 2 3 4 5 6} {.fraToolbar.mBtnH.items add command -label "Título $bn" -command {}} 
 
 menubutton .fraToolbar.mBtnIt -text "Cursiva" -direction below 
 menubutton .fraToolbar.mBtnB -text "Negrita" -direction below 
@@ -40,14 +40,14 @@ menu .fraToolbar.mBtnL.items -tearoff 0
  .fraToolbar.mBtnL.items add command -label "Lista desordenada" -command {}
  .fraToolbar.mBtnL.items add command -label "Lista numerada" -command {}
 
-menubutton .fraToolbar.mBtnCod -text "CÃ³digo" -direction below -menu .fraToolbar.mBtnCod.items
+menubutton .fraToolbar.mBtnCod -text "Código" -direction below -menu .fraToolbar.mBtnCod.items
 menu .fraToolbar.mBtnCod.items -tearoff 0
- .fraToolbar.mBtnCod.items add command -label "CÃ³digo en texto" -command {}
- .fraToolbar.mBtnCod.items add command -label "Bloque de cÃ³digo" -command {}
+ .fraToolbar.mBtnCod.items add command -label "Código en texto" -command {}
+ .fraToolbar.mBtnCod.items add command -label "Bloque de código" -command {}
 
 menubutton .fraToolbar.mBtnLnk -text "Enlace" -direction below 
 menubutton .fraToolbar.mBtnImg -text "Imagen" -direction below 
-menubutton .fraToolbar.mBtnR -text "LÃ­nea horizontal" -direction below 
+menubutton .fraToolbar.mBtnR -text "Línea horizontal" -direction below 
 
 pack .fraToolbar.mBtnH -side left
 pack .fraToolbar.mBtnIt -side left
