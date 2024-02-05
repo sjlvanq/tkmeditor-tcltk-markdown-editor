@@ -141,15 +141,19 @@ proc putHLine {tw} {
 
 proc putLineMarkdown {tw mark} {
 	set selection_range [$tw tag ranges sel]
+	# If a selection range is set then separate it to a new line for use as content 
 	if {[string length $selection_range]} {
 		$tw insert "[lindex $selection_range 0]" "\n"
 	}
+	# What we are interested in is the line number from cursor position
 	set cursor_position [$tw index insert]
+	# Add $mark at begining of line
 	$tw insert "$cursor_position linestart" "$mark "
 }
 
 proc putInlineMarkdown {tw mark {nested false}} {
 	set selection_range [$tw tag ranges sel]
+	# If exists a selection use it as content
 	if {[string length $selection_range]} {
 		if {$nested} {
 			$tw insert [lindex $selection_range 1] $mark //1
