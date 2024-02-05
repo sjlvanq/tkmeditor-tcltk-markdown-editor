@@ -151,19 +151,16 @@ proc putLineMarkdown {tw mark} {
 	$tw insert "$cursor_position linestart" "$mark "
 }
 
-proc putInlineMarkdown {tw mark {nested false}} {
+proc putInlineMarkdown {tw mark} {
 	set selection_range [$tw tag ranges sel]
 	# If exists a selection use it as content
 	if {[string length $selection_range]} {
-		if {$nested} {
-			$tw insert [lindex $selection_range 1] $mark //1
-		}
+		$tw insert [lindex $selection_range 1] $mark //1
 		$tw insert [lindex $selection_range 0] $mark
 	} else {
 		set cursor_position [$tw index insert]
-		if {$nested} {
-			$tw insert $cursor_position "$mark$mark"
-		}
+		$tw insert $cursor_position "$mark$mark"
+		# Move cursor inside the marks
 		$tw mark set insert "$cursor_position + [string length $mark] chars"
 	}
 }
