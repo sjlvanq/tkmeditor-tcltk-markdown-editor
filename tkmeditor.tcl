@@ -35,11 +35,12 @@ frame .fraToolbar
 menubutton .fraToolbar.mBtnH -text "Títulos" -direction below -menu .fraToolbar.mBtnH.items
 menu .fraToolbar.mBtnH.items -tearoff 0
 foreach bn {1 2 3 4 5 6} {
-	.fraToolbar.mBtnH.items add command -label "Título $bn"
+	set mark [string repeat "#" $bn]
+	.fraToolbar.mBtnH.items add command -label "Título $bn" -command "putLineMarkdown .text $mark"
 } 
 
-button .fraToolbar.mBtnIt -text "Cursiva" -command {putMarkdown .text "*" true} -relief flat
-button .fraToolbar.mBtnB -text "Negrita" -command {putMarkdown .text "**" true}  -relief flat
+button .fraToolbar.mBtnIt -text "Cursiva" -command {putInlineMarkdown .text "*" true} -relief flat
+button .fraToolbar.mBtnB -text "Negrita" -command {putInlineMarkdown .text "**" true}  -relief flat
 
 menubutton .fraToolbar.mBtnL -text "Listas" -direction below -menu .fraToolbar.mBtnL.items
 menu .fraToolbar.mBtnL.items -tearoff 0
@@ -48,12 +49,12 @@ menu .fraToolbar.mBtnL.items -tearoff 0
 
 menubutton .fraToolbar.mBtnCod -text "Código" -direction below -menu .fraToolbar.mBtnCod.items
 menu .fraToolbar.mBtnCod.items -tearoff 0 -relief raised
- .fraToolbar.mBtnCod.items add command -label "Código en texto" -command {putMarkdown .text "`" true}
+ .fraToolbar.mBtnCod.items add command -label "Código en texto" -command {putInlineMarkdown .text "`" true}
  .fraToolbar.mBtnCod.items add command -label "Bloque de código" -command {}
 
 button .fraToolbar.mBtnLnk -text "Enlace" -relief flat
 button .fraToolbar.mBtnImg -text "Imagen" -relief flat
-button .fraToolbar.mBtnR -text "Línea horizontal" -relief flat
+button .fraToolbar.mBtnR -text "Línea horizontal" -relief flat -command {putHLine .text}
 
 pack .fraToolbar.mBtnH -side left
 pack .fraToolbar.mBtnIt -side left
@@ -113,7 +114,27 @@ proc loadFile {tw fname} {
 	set openedfile $fname
 }
 
-proc putMarkdown {tw mark {nested false}} {
+proc putHLine {tw} {
+	set cursor_position [$tw index insert]
+	# If line is not empty begin with LF
+	if {[$tw count -displaychars "$cursor_position linestart" "$cursor_position lineend"]} {
+		$tw insert "$cursor_position lineend" "\n"
+		# Then update cursor_position
+		set cursor_position [$tw index insert]
+	}
+	$tw insert "$cursor_position lineend" "\n-----\n\n"
+}
+
+proc putLineMarkdown {tw mark} {
+	set selection_range [$tw tag ranges sel]
+	if {[string length $selection_range]} {
+		$tw insert "[lindex $selection_range 0]" "\n"
+	}
+	set cursor_position [$tw index insert]
+	$tw insert "$cursor_position linestart" "$mark "
+}
+
+proc putInlineMarkdown {tw mark {nested false}} {
 	set selection_range [$tw tag ranges sel]
 	if {[string length $selection_range]} {
 		if {$nested} {
@@ -126,7 +147,6 @@ proc putMarkdown {tw mark {nested false}} {
 			$tw insert $cursor_position "$mark$mark"
 		}
 		$tw mark set insert "$cursor_position + [string length $mark] chars"
-		set cursor_position [$tw index insert]
 	}
 }
 
