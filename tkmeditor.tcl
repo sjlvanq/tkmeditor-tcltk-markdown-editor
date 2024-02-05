@@ -53,8 +53,8 @@ foreach bn {1 2 3 4 5 6} {
 	.fraToolbar.mBtnH.items add command -label "Título $bn" -command "putLineMarkdown .text $mark"
 } 
 
-button .fraToolbar.mBtnIt -text "Cursiva" -command {putInlineMarkdown .text "*" true} -relief flat
-button .fraToolbar.mBtnB -text "Negrita" -command {putInlineMarkdown .text "**" true}  -relief flat
+button .fraToolbar.mBtnIt -text "Cursiva" -command {putInlineMarkdown .text "*"} -relief flat
+button .fraToolbar.mBtnB -text "Negrita" -command {putInlineMarkdown .text "**"}  -relief flat
 
 menubutton .fraToolbar.mBtnL -text "Listas" -direction below -menu .fraToolbar.mBtnL.items
 menu .fraToolbar.mBtnL.items -tearoff 0
@@ -63,7 +63,7 @@ menu .fraToolbar.mBtnL.items -tearoff 0
 
 menubutton .fraToolbar.mBtnCod -text "Código" -direction below -menu .fraToolbar.mBtnCod.items
 menu .fraToolbar.mBtnCod.items -tearoff 0 -relief raised
- .fraToolbar.mBtnCod.items add command -label "Código en texto" -command {putInlineMarkdown .text "`" true}
+ .fraToolbar.mBtnCod.items add command -label "Código en texto" -command {putInlineMarkdown .text "`"}
  .fraToolbar.mBtnCod.items add command -label "Bloque de código" -command {}
 
 button .fraToolbar.mBtnLnk -text "Enlace" -relief flat
