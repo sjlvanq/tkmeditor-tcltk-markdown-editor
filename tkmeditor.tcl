@@ -66,8 +66,8 @@ menu .fraToolbar.mBtnCod.items -tearoff 0 -relief raised
  .fraToolbar.mBtnCod.items add command -label "Código en texto" -command {putInlineMarkdown .text "`"}
  .fraToolbar.mBtnCod.items add command -label "Bloque de código" -command {}
 
-button .fraToolbar.mBtnLnk -text "Enlace" -relief flat
-button .fraToolbar.mBtnImg -text "Imagen" -relief flat
+button .fraToolbar.mBtnLnk -text "Enlace" -relief flat -command {putTwoFieldsMarkdown .text}
+button .fraToolbar.mBtnImg -text "Imagen" -relief flat -command {putTwoFieldsMarkdown .text true}
 button .fraToolbar.mBtnR -text "Línea horizontal" -relief flat -command {putHLine .text}
 
 pack .fraToolbar.mBtnH -side left
@@ -163,6 +163,23 @@ proc putInlineMarkdown {tw mark} {
 		# Move cursor inside the marks
 		$tw mark set insert "$cursor_position + [string length $mark] chars"
 	}
+}
+
+proc putTwoFieldsMarkdown {tw {is_image false}} {
+	set selection_range [$tw tag ranges sel]
+	# If exists a selection use it as first field content
+	if {[string length $selection_range]} {
+		# cursor_position will be used for put ! at begining if is_image
+		set cursor_position [lindex $selection_range 0]
+		$tw insert [lindex $selection_range 1] "\]\(URL\)" //1
+		$tw insert [lindex $selection_range 0] "\["
+	# If not exists a selection use default texts as first field content
+	} else {
+		set cursor_position [$tw index insert]
+		if {$is_image} {set sufix "alternativo"} else {set sufix "del enlace"}
+		$tw insert $cursor_position "\[Texto $sufix\]\(URL\)"
+	}
+	if {$is_image} {$tw insert $cursor_position !}
 }
 
 focus .text
