@@ -102,7 +102,7 @@ proc fileDialog {textarea operation} {
     if {$operation == "open"} {
 		set file [tk_getOpenFile -filetypes $types -parent . ]
 		if {[string compare $file ""]} {
-			ClearText $textarea
+			clearText $textarea
 			loadFile $textarea $file
 		}
     } elseif {$operation == "saveAs"} {
