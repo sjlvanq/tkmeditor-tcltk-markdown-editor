@@ -35,7 +35,7 @@ pack .statusBar -side bottom -fill x -pady 2
 menu .menu
 menu .menu.file -tearoff 0
 .menu add cascade -label "Archivo" -menu .menu.file -underline 0
-.menu.file add command -label "Nuevo" -command {nuevoArchivo .text}
+.menu.file add command -label "Nuevo" -command {newFile .text}
 .menu.file add command -label "Abrir" -command {fileDialog .text "open"}
 .menu.file add command -label "Guardar" -command {saveFile .text $openedfile}
 .menu.file add command -label "Guardar como..." -command {fileDialog .text "saveAs"}
