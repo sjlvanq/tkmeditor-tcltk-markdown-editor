@@ -37,8 +37,8 @@ menu .menu.file -tearoff 0
 .menu add cascade -label "Archivo" -menu .menu.file -underline 0
 .menu.file add command -label "Nuevo" -command {nuevoArchivo .text}
 .menu.file add command -label "Abrir" -command {fileDialog .text "open"}
-.menu.file add command -label "Guardar" -command {}
-.menu.file add command -label "Guardar como..." -command {fileDialog .text "save"}
+.menu.file add command -label "Guardar" -command {saveFile .text $openedfile}
+.menu.file add command -label "Guardar como..." -command {fileDialog .text "saveAs"}
 .menu.file add separator
 .menu.file add command -label "Salir" -command {destroy .}
 
@@ -105,9 +105,13 @@ proc fileDialog {textarea operation} {
 			ClearText $textarea
 			loadFile $textarea $file
 		}
-    } else {
+    } elseif {$operation == "saveAs"} {
 		set file [tk_getSaveFile -filetypes $types -parent . \
-		-initialfile sin_nombre -defaultextension .md]
+			-initialfile sin_nombre -defaultextension .md]
+		if {$file != ""} {
+			saveFile $textarea $file
+		}
+		#else cancelado
     }
 }
 
@@ -126,6 +130,25 @@ proc loadFile {tw fname} {
 		$tw insert end [read $f 10000]
 	}
 	set openedfile $fname
+}
+
+proc saveFile {tw fname} {
+	global openedfile
+	if {$fname == ""} {
+		fileDialog $tw "saveAs"
+		return
+	}
+	set x [catch {set fid [open $fname w+]}]
+	set y [catch {puts $fid [$tw get 1.0 end-1c]}]
+	set z [catch {close $fid}]
+	if { $x || $y || $z || ![file exists $fname] || ![file isfile $fname] || ![file readable $fname] } {
+		tk_messageBox -parent . -icon error \
+			-message "Ocurrió un error al guardar \"$fname\""
+	} else {
+		tk_messageBox -parent . -icon info \
+			-message "Archivo guardado"
+		set openedfile $fname
+	}
 }
 
 proc putHLine {tw} {
