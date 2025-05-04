@@ -64,7 +64,7 @@ menu .fraToolbar.mBtnL.items -tearoff 0
 menubutton .fraToolbar.mBtnCod -text "Código" -direction below -menu .fraToolbar.mBtnCod.items
 menu .fraToolbar.mBtnCod.items -tearoff 0 -relief raised
  .fraToolbar.mBtnCod.items add command -label "Código en texto" -command {putInlineMarkdown .text "`"}
- .fraToolbar.mBtnCod.items add command -label "Bloque de código" -command {}
+ .fraToolbar.mBtnCod.items add command -label "Bloque de código" -command {putInlineMarkdown .text "\n```\n"}
 
 button .fraToolbar.mBtnLnk -text "Enlace" -relief flat -command {putTwoFieldsMarkdown .text}
 button .fraToolbar.mBtnImg -text "Imagen" -relief flat -command {putTwoFieldsMarkdown .text true}
