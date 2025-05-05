@@ -22,6 +22,7 @@ package require Tk
 # ----- Variables globales -----
 set openedfile ""
 set persistentMark ""
+set persistentMarkNivel 1
 # -----
 
 wm title . "TKMeDitor"
@@ -60,7 +61,7 @@ button .fraToolbar.mBtnB -text "Negrita" -command {putInlineMarkdown .text "**"}
 menubutton .fraToolbar.mBtnL -text "Listas" -direction below -menu .fraToolbar.mBtnL.items
 menu .fraToolbar.mBtnL.items -tearoff 0
  .fraToolbar.mBtnL.items add command -label "Lista desordenada" -command {setPersistentMode .text "*"}
- .fraToolbar.mBtnL.items add command -label "Lista numerada"
+ .fraToolbar.mBtnL.items add command -label "Lista numerada" -command {setPersistentMode .text "<<nivel>>."}
 
 menubutton .fraToolbar.mBtnCod -text "Código" -direction below -menu .fraToolbar.mBtnCod.items
 menu .fraToolbar.mBtnCod.items -tearoff 0 -relief raised
@@ -98,18 +99,21 @@ bind Menu <<MenuSelect>> {
 
 bind .text <KeyPress> {
     global persistentMark
+    global persistentMarkNivel
     set cursor_position [%W index insert]
     if {%k == 36 || %k == 104} {
-		# If persistentMark is setted
+		# If persistentMark is set
         if [string length $persistentMark] {
             set line [lindex [split $cursor_position '.'] 0]
             # If last item is empty
-            if {[%W get $line.0 $line.end-1c]==$persistentMark} {
+            if {[%W get $line.0 $line.end-1c]==[string map [list "<<nivel>>" [expr $persistentMarkNivel]] $persistentMark]} {
                 %W delete $line.0 $line.end
                 unsetPersistentMode
             } else {
+                incr persistentMarkNivel
+                set mark [string map [list "<<nivel>>" $persistentMarkNivel] $persistentMark]
                 after idle {
-                    putLineMarkdown %W $persistentMark
+                    putLineMarkdown %W $mark
                 }
             }
         }
@@ -118,13 +122,17 @@ bind .text <KeyPress> {
 
 proc setPersistentMode {tw mark} {
     global persistentMark
+    global persistentMarkNivel
     set persistentMark $mark
-    putLineMarkdown $tw $mark
+    set persistentMarkNivel 1
+    putLineMarkdown $tw [string map [list "<<nivel>>" $persistentMarkNivel] $mark]
 }
 
 proc unsetPersistentMode {} {
     global persistentMark
+    global persistentMarkNivel
     set persistentMark ""
+    set persistentMarkNivel 1
 }
 
 proc fileDialog {textarea operation} {
