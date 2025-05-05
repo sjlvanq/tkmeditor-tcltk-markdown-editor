@@ -166,9 +166,13 @@ proc clearText {tw} {$tw delete 1.0 end}
 proc loadFile {tw fname} {
 	global openedfile
 	set f [open $fname]
-	while {![eof $f]} {
-		$tw insert end [read $f 10000]
-	}
+    try {
+        set content [read $f]
+    } finally {
+        close $f
+    }
+    $tw delete 1.0 end
+    $tw insert end $content
 	set openedfile $fname
 }
 
