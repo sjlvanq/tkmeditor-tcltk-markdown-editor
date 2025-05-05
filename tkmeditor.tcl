@@ -21,7 +21,7 @@ package require Tk
 
 # ----- Variables globales -----
 set openedfile ""
-set persistentmd ""
+set persistentMark ""
 # -----
 
 wm title . "TKMeDitor"
@@ -59,7 +59,7 @@ button .fraToolbar.mBtnB -text "Negrita" -command {putInlineMarkdown .text "**"}
 
 menubutton .fraToolbar.mBtnL -text "Listas" -direction below -menu .fraToolbar.mBtnL.items
 menu .fraToolbar.mBtnL.items -tearoff 0
- .fraToolbar.mBtnL.items add command -label "Lista desordenada" -command {setLinePersistentFormat .text "*"}
+ .fraToolbar.mBtnL.items add command -label "Lista desordenada" -command {setPersistentMode .text "*"}
  .fraToolbar.mBtnL.items add command -label "Lista numerada"
 
 menubutton .fraToolbar.mBtnCod -text "Código" -direction below -menu .fraToolbar.mBtnCod.items
@@ -97,34 +97,34 @@ bind Menu <<MenuSelect>> {
 }
 
 bind .text <KeyPress> {
-    global persistentmd
+    global persistentMark
     set cursor_position [%W index insert]
     if {%k == 36 || %k == 104} {
-		# If persistentmd is setted
-        if [string length $persistentmd] {
+		# If persistentMark is setted
+        if [string length $persistentMark] {
             set line [lindex [split $cursor_position '.'] 0]
             # If last item is empty
-            if {[%W get $line.0 $line.end-1c]==$persistentmd} {
+            if {[%W get $line.0 $line.end-1c]==$persistentMark} {
                 %W delete $line.0 $line.end
-                unsetLinePersistentFormat
+                unsetPersistentMode
             } else {
                 after idle {
-                    putLineMarkdown %W $persistentmd
+                    putLineMarkdown %W $persistentMark
                 }
             }
         }
     }
 }
 
-proc setLinePersistentFormat {tw mark} {
-    global persistentmd
-    set persistentmd $mark
+proc setPersistentMode {tw mark} {
+    global persistentMark
+    set persistentMark $mark
     putLineMarkdown $tw $mark
 }
 
-proc unsetLinePersistentFormat {} {
-    global persistentmd
-    set persistentmd ""
+proc unsetPersistentMode {} {
+    global persistentMark
+    set persistentMark ""
 }
 
 proc fileDialog {textarea operation} {
